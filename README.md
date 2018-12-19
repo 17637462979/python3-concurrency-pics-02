@@ -9,17 +9,17 @@
 
 # 1. 进度条
 
-![](http://www.madmalls.com/admin/medias/uploaded/async-mzitu-02-75e2c01f.png)
+![](http://www.madmalls.com/api/medias/uploaded/async-mzitu-02-75e2c01f.png)
 
 
 # 2. 部分截图
 
-![](http://www.madmalls.com/admin/medias/uploaded/mzitu-01-e91219db.png)
-![](http://www.madmalls.com/admin/medias/uploaded/mzitu-02-bacf231f.png)
+![](http://www.madmalls.com/api/medias/uploaded/mzitu-01-e91219db.png)
+![](http://www.madmalls.com/api/medias/uploaded/mzitu-02-bacf231f.png)
 
 > 分析爬取的过程：
 
-![](http://www.madmalls.com/admin/medias/uploaded/mzitu-022a41aa.jpg)
+![](http://www.madmalls.com/api/medias/uploaded/mzitu-022a41aa.jpg)
 
 
 # 3. 使用方法

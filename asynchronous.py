@@ -65,8 +65,8 @@ async def get_albums(session, url):
 
     for a in a_tags:
         # 判断每个<a></a>标签中的URL是不是符合图集URL格式，如果不是，则递归调用它看看它下面有没有相同URL
-        # 因为有一个 http://www.mzitu.com/old/
-        if re.match(r'http://www.mzitu.com/\d+', a['href']):
+        # 因为有一个 https://www.mzitu.com/old/
+        if re.match(r'https://www.mzitu.com/\d+', a['href']):
             data = {
                 'album_title': a.get_text(),  # 每个图集的标题
                 'album_url': a['href'],  # 每个图集的URL
@@ -186,7 +186,7 @@ async def get_image_url(semaphore, session, image_page):
     # 获取图片的真实地址
     try:
         image_url = soup.find('div', {'class': 'main-image'}).find('img')['src']
-    except TypeError as e:  # 偶尔有一些图集中间某几个图片页面会返回响应，但响应中没有main-image，即找不到有效的图片资源URL，比如http://www.mzitu.com/57773/41
+    except TypeError as e:  # 偶尔有一些图集中间某几个图片页面会返回响应，但响应中没有main-image，即找不到有效的图片资源URL，比如https://www.mzitu.com/57773/41
         logger.error('Image page No.{} [{}] of album {} [{}] has no valid image URL'.format(image_page['image_idx'], image_page['image_page_url'], image_page['album_title'], image_page['album_url']))
         # 更新图片页面的collection，增加字段
         data = {
@@ -197,8 +197,8 @@ async def get_image_url(semaphore, session, image_page):
         return {
             'failed': True  # 用于告知get_image_url()的调用方，请求此图片页面URL时失败了
         }
-    # 还有一些image_url的值不是有效的图片链接，比如http://www.mzitu.com/57773/40获得的image_url就是'http:\n</p>\n</div>\r\n            <div class='
-    if not re.match(r'http://.*?\.(jpe|jpg|jpeg|png|gif)', image_url):  # http://www.mzitu.com/23077/18图片页面返回的是http://i.meizitu.net/2014/03/20140315qc18.jpe
+    # 还有一些image_url的值不是有效的图片链接，比如https://www.mzitu.com/57773/40获得的image_url就是'https:\n</p>\n</div>\r\n            <div class='
+    if not re.match(r'https://.*?\.(jpe|jpg|jpeg|png|gif)', image_url):  # https://www.mzitu.com/23077/18图片页面返回的是https://i.meizitu.net/2014/03/20140315qc18.jpe
         logger.error('Image page No.{} [{}] of album {} [{}] has no valid image URL'.format(image_page['image_idx'], image_page['image_page_url'], image_page['album_title'], image_page['album_url']))
         # 更新图片页面的collection，增加字段
         data = {
@@ -252,7 +252,7 @@ async def download_image(semaphore, session, image):
 
     # 每次请求延迟（秒）
     # await asyncio.sleep(0.5)
-    # 下载图片: mzitu.com设置了防盗链，要访问图片资源，必须在请求头中指定此图片所属相册的URL，比如Referer: http://www.mzitu.com/138611
+    # 下载图片: mzitu.com设置了防盗链，要访问图片资源，必须在请求头中指定此图片所属相册的URL，比如Referer: https://www.mzitu.com/138611
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36',
         'Referer': image['album_url']
@@ -293,7 +293,7 @@ async def download_image(semaphore, session, image):
 
 async def step01():
     # 入口页面
-    start_url = 'http://www.mzitu.com/all/'
+    start_url = 'https://www.mzitu.com/all/'
     # 不能为每个请求创建一个seesion，减少开销
     async with aiohttp.ClientSession() as session:
         t1 = time.time()

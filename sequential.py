@@ -94,7 +94,7 @@ def get_albums(url):
     try:
         a_tags = soup.find('div', {'class': 'all'}).find_all('a')  # <class 'bs4.element.ResultSet'>
     except:
-        pass
+        return
     logger.critical('URL [{}] has [{}] <a></a> tags'.format(url, len(a_tags)))
 
     for a in a_tags:
@@ -143,13 +143,13 @@ def get_image_pages(album):
     try:
         date_span = soup.find('div', {'class': 'main-meta'}).find_all('span')[1].get_text()  # 类似于'发布于 2014-06-20 13:09'
     except:
-        pass
+        return
     published_at = re.search(r'\d+-\d+', date_span).group()  # 类似于2014-06
     # 图集有多少张图片
     try:
         images_num = int(soup.find('div', {'class': 'pagenavi'}).find_all('span')[-2].get_text())
     except:
-        pass
+        return
     logger.debug('Album {} [{}] has [{}] images'.format(album['album_title'], album['album_url'], images_num))
 
     # 按日期创建目录

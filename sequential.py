@@ -91,7 +91,10 @@ def get_albums(url):
     # 使用lxml解析器，解析返回的响应（HTML文档）
     soup = BeautifulSoup(resp.text, 'lxml')
     # 每个图集按年份/月份被放在 <div class='all'></div> 下面的每个<a href="图集URL">图集标题<a> 中
-    a_tags = soup.find('div', {'class': 'all'}).find_all('a')  # <class 'bs4.element.ResultSet'>
+    try:
+        a_tags = soup.find('div', {'class': 'all'}).find_all('a')  # <class 'bs4.element.ResultSet'>
+    except:
+        pass
     logger.critical('URL [{}] has [{}] <a></a> tags'.format(url, len(a_tags)))
 
     for a in a_tags:
@@ -137,10 +140,16 @@ def get_image_pages(album):
     # 使用lxml解析器，解析返回的响应（HTML文档）
     soup = BeautifulSoup(resp.text, 'lxml')
     # 图集发布日期，后续保存时要按年份/月份创建目录
-    date_span = soup.find('div', {'class': 'main-meta'}).find_all('span')[1].get_text()  # 类似于'发布于 2014-06-20 13:09'
+    try:
+        date_span = soup.find('div', {'class': 'main-meta'}).find_all('span')[1].get_text()  # 类似于'发布于 2014-06-20 13:09'
+    except:
+        pass
     published_at = re.search(r'\d+-\d+', date_span).group()  # 类似于2014-06
     # 图集有多少张图片
-    images_num = int(soup.find('div', {'class': 'pagenavi'}).find_all('span')[-2].get_text())
+    try:
+        images_num = int(soup.find('div', {'class': 'pagenavi'}).find_all('span')[-2].get_text())
+    except:
+        pass
     logger.debug('Album {} [{}] has [{}] images'.format(album['album_title'], album['album_url'], images_num))
 
     # 按日期创建目录
@@ -204,7 +213,7 @@ def get_image(image_page):
     # 获取图片的真实地址
     try:
         image_url = soup.find('div', {'class': 'main-image'}).find('img')['src']
-    except TypeError as e:  # 偶尔有一些图集中间某几个图片页面会返回响应，但响应中没有main-image，即找不到有效的图片资源URL，比如https://www.mzitu.com/57773/41
+    except:  # 偶尔有一些图集中间某几个图片页面会返回响应，但响应中没有main-image，即找不到有效的图片资源URL，比如https://www.mzitu.com/57773/41
         logger.error('Image page No.{} [{}] of album {} [{}] has no valid image URL'.format(image_page['image_idx'], image_page['image_page_url'], image_page['album_title'], image_page['album_url']))
         # 更新图片页面的collection，增加字段
         data = {

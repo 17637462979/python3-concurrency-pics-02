@@ -70,6 +70,11 @@ async def get_albums(session, url):
     for a in a_tags:
         # 判断每个<a></a>标签中的URL是不是符合图集URL格式，如果不是，则递归调用它看看它下面有没有相同URL
         # 因为有一个 https://www.mzitu.com/old/
+
+        # 在 https://www.mzitu.com/old/ 页面中第一个URL 又是 https://www.mzitu.com/all/ 需要排除它，不然就无限死循环了
+        if a['href'] == 'https://www.mzitu.com/all/':
+            continue
+
         if re.match(r'https://www.mzitu.com/\d+', a['href']):
             data = {
                 'album_title': a.get_text(),  # 每个图集的标题
